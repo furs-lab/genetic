@@ -3,7 +3,6 @@ from logging.config import dictConfig
 from analysis import Analysis
 from logger_config import LOGGING_CONFIG
 
-
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -19,6 +18,12 @@ if __name__ == '__main__':
     Analysis.get_panel_data(Analysis, 'fat')
     Analysis.sort_by_gens(Analysis)
     print(Analysis.data['Gen'].tolist())
+
+    import database
+
+    res = database.get_gene_function('ADRB2', 'rs1042713')
+    print(res)
+    database.stop()
     logging.info("finish main")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
