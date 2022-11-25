@@ -25,10 +25,10 @@ LOGGING_CONFIG = {
     },
     'formatters': {
         'console_formatter': {
-            'format': '%(levelname)s - %(name)s - %(message)s'
+            'format': '%(levelname)s - %(filename)s:%(funcName)s - %(message)s'
         },
         'file_formatter': {
-            'format': '%(asctime)s - %(levelname)s - %(name)s - %(lineno)s - %(message)s'
+            'format': '%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s:%(lineno)s - %(message)s'
         },
     },
 

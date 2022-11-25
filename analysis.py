@@ -38,7 +38,9 @@ class Analysis:
         return self.panels
 
     def get_panel_data(self, panel):
+        if panel not in self.panels:
+            logging.warning(f'you want to create data for panel \'{panel}\' but it is not in panels: {self.panels}')
         self.data = (self.raw_data.loc[self.raw_data['BlockShifr'].str.contains(panel)])[
             ['Gen', 'RS', 'Полиморфизм', 'Result']].copy()
-        logging.info(f'create data frame \'data\' for panel \'{panel}\'')
+        logging.info(f'create data frame for panel \'{panel}\'')
         return self.data
