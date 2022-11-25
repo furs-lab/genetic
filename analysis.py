@@ -44,3 +44,8 @@ class Analysis:
             ['Gen', 'RS', 'Полиморфизм', 'Result']].copy()
         logging.info(f'create data frame for panel \'{panel}\'')
         return self.data
+
+    def sort_by_gens(self):
+        self.data = self.data.sort_values(['Gen'])
+        logging.info(f'sort data frame by \'Gen\'')
+        return self.data

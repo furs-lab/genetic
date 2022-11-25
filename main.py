@@ -17,8 +17,8 @@ if __name__ == '__main__':
     Analysis.read(Analysis, "tst_analysis.xlsx")
     panels = Analysis.get_panels(Analysis)
     Analysis.get_panel_data(Analysis, 'fat')
-    print(Analysis.data)
-    print(Analysis.data.iloc[:2].values.tolist())
+    Analysis.sort_by_gens(Analysis)
+    print(Analysis.data['Gen'].tolist())
     logging.info("finish main")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
