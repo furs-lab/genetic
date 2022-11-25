@@ -33,10 +33,23 @@ def test_get_themes_id():
     database.stop()
     assert res == [[10], [10, 20, 28], [33, 34]]
 
+
+def test_get_themes_id_by_id():
+    res = database.get_themes_id(13)
+    database.stop()
+    assert res == [10, 20, 28]
+
+
 def test_get_themes_id_no_such_panel():
     res = database.get_themes_id('jrgnrthjvgre')
     database.stop()
     assert res == []
+
+def test_get_themes_id_by_id_no_such_id():
+    res = database.get_themes_id(1)
+    database.stop()
+    assert res == []
+
 
 if __name__ == '__main__':
     pytest.main()
