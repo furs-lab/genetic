@@ -72,9 +72,9 @@ def get_themes_id(panel_name):
 
 @dispatch(int)
 def get_themes_id(panel_id):
-    panel_name = session.query(Panels).filter(Panels.id == panel_id).first()
-    if panel_name is not None:
-        return get_themes_id(panel_name.name)
-    else:
+    qr = session.query(PanelSet).filter(PanelSet.id_panel == panel_id)
+    themes = [row.id_theme for row in qr.all()]
+    if len(themes) == 0:
         logging.warning(f'there is no panel with id: {panel_id}, empty themes_id list is returned')
-        return []
+    logging.info(f'get theme_id list {themes} for panel with id: {panel_id}')
+    return themes
