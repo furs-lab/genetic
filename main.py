@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_gene_function('ADRB2', 'rs1042713')
+    res = database.get_themes_id('НГ 31 ген')
     print(res)
     database.stop()
     logging.info("finish main")

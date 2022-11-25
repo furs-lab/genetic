@@ -27,5 +27,16 @@ def test_get_gene_function_no_such_rs():
     assert res == ['']
 
 
+def test_get_themes_id():
+    res = [database.get_themes_id('НГ14-16'), database.get_themes_id('НГ 31 ген'),
+           database.get_themes_id('80 Нутригенетика: избыточный вес и здоровье (max)')]
+    database.stop()
+    assert res == [[10], [10, 20, 28], [33, 34]]
+
+def test_get_themes_id_no_such_panel():
+    res = database.get_themes_id('jrgnrthjvgre')
+    database.stop()
+    assert res == []
+
 if __name__ == '__main__':
     pytest.main()
