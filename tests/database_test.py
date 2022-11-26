@@ -45,10 +45,17 @@ def test_get_themes_id_no_such_panel():
     database.stop()
     assert res == []
 
+
 def test_get_themes_id_by_id_no_such_id():
     res = database.get_themes_id(1)
     database.stop()
     assert res == []
+
+
+def test_get_subthemes_id():
+    res = [database.get_subthemes_id(10), database.get_subthemes_id(1)]
+    database.stop()
+    assert res == [[7, 8, 17], []]
 
 
 if __name__ == '__main__':
