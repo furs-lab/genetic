@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_themes(13)
+    res = database.get_subthemes(10)
     print(res)
     database.stop()
     logging.info("finish main")

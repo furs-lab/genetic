@@ -36,7 +36,7 @@ def test_get_themes():
     assert res == [[10, 20, 28], [10], []]
 
 
-def test_get_themes_id_by_id():
+def test_get_themes_by_id():
     res1 = database.get_themes(13)
     res2 = database.get_themes(8)
     res3 = database.get_themes(1)
@@ -45,8 +45,10 @@ def test_get_themes_id_by_id():
     assert res == [[10, 20, 28], [10], []]
 
 
-def test_get_subthemes_id():
-    res = [database.get_subthemes_id(10), database.get_subthemes_id(1)]
+def test_get_subthemes():
+    res1 = database.get_subthemes(10)
+    res2 = database.get_subthemes(1)
+    res = [[item['id'] for item in res1], [item['id'] for item in res2]]
     database.stop()
     assert res == [[7, 8, 17], []]
 

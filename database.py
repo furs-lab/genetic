@@ -54,10 +54,14 @@ def get_themes(panel_id):
         return []
 
 
-def get_subthemes_id(theme_id):
+def get_subthemes(theme_id):
     qr = session.query(ThemeSet).filter(ThemeSet.id_theme == theme_id)
-    subthemes_id = [row.id_subtheme for row in qr.all()]
-    if len(subthemes_id) == 0:
+    subthemes_list = []
+    for row in qr.all():
+        subthemes_list.append({'id': row.id_subtheme,
+                               'name': session.get(SubThemes, row.id_subtheme).name,
+                               'name_report': session.get(SubThemes, row.id_subtheme).name_report})
+    if len(subthemes_list) == 0:
         logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes_id list is returned')
-    logging.info(f'get subthemes_id list {subthemes_id} for theme with id: {theme_id}')
-    return subthemes_id
+    logging.info(f'get subthemes_id list {subthemes_list} for theme with id: {theme_id}')
+    return subthemes_list
