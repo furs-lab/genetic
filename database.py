@@ -33,18 +33,27 @@ def get_gene_function(gene_name, rs_pos=None):
 @dispatch(str)
 def get_themes_id(panel_name):
     qr = session.query(Panels, PanelSet).filter(Panels.id == PanelSet.id_panel).filter(Panels.name == panel_name)
-    themes = [row.PanelSet.id_theme for row in qr.all()]
-    if len(themes) == 0:
+    themes_id = [row.PanelSet.id_theme for row in qr.all()]
+    if len(themes_id) == 0:
         logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes_id list is returned')
-    logging.info(f'get theme_id list {themes} for panel \'{panel_name}\'')
-    return themes
+    logging.info(f'get theme_id list {themes_id} for panel \'{panel_name}\'')
+    return themes_id
 
 
 @dispatch(int)
 def get_themes_id(panel_id):
     qr = session.query(PanelSet).filter(PanelSet.id_panel == panel_id)
-    themes = [row.id_theme for row in qr.all()]
-    if len(themes) == 0:
-        logging.warning(f'there is no panel with id: {panel_id}, empty themes_id list is returned')
-    logging.info(f'get theme_id list {themes} for panel with id: {panel_id}')
-    return themes
+    themes_id = [row.id_theme for row in qr.all()]
+    if len(themes_id) == 0:
+        logging.warning(f'there is no themes for panel with id: {panel_id}, empty themes_id list is returned')
+    logging.info(f'get theme_id list {themes_id} for panel with id: {panel_id}')
+    return themes_id
+
+
+def get_subthemes_id(theme_id):
+    qr = session.query(ThemeSet).filter(ThemeSet.id_theme == theme_id)
+    subthemes_id = [row.id_subtheme for row in qr.all()]
+    if len(subthemes_id) == 0:
+        logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes_id list is returned')
+    logging.info(f'get subthemes_id list {subthemes_id} for theme with id: {theme_id}')
+    return subthemes_id
