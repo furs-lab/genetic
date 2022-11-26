@@ -30,13 +30,13 @@ def get_gene(gene_name, rs_pos=None):
 
     if len(gene) > 1:
         rs_pos = [row.rs_position for row in qr.all()]
-        logging.warning(f'more than one gene function find because there are several rs_positions {rs_pos}')
+        logging.warning(f'more than one gene found because there are several rs_positions {rs_pos}')
     if len(gene) == 0:
-        logging.warning(f'gene: \'{gene_name}\', rs_position: \'{rs_pos}\' does not exist, empty function returned')
+        logging.warning(f'gene: \'{gene_name}\', rs_position: \'{rs_pos}\' does not exist, empty dict returned')
         gene = [{'id': 0, 'name': '', 'rs_position': '', 'gene': '', 'polimorphism': '',
             'genotype1': '', 'genotype2': '', 'genotype3': '',
             'freq1': 0, 'freq2': 0, 'freq3': 0, 'function': ''}]
-    logging.info(f'get function for gene: \'{gene_name}\', rs_position: \'{rs_pos}\'')
+    logging.info(f'get gene: \'{gene_name}\', rs_position: \'{rs_pos}\'')
     return gene
 
 
