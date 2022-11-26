@@ -31,13 +31,17 @@ def get_gene_function(gene_name, rs_pos=None):
 
 
 @dispatch(str)
-def get_themes_id(panel_name):
+def get_themes(panel_name):
     qr = session.query(Panels, PanelSet).filter(Panels.id == PanelSet.id_panel).filter(Panels.name == panel_name)
-    themes_id = [row.PanelSet.id_theme for row in qr.all()]
-    if len(themes_id) == 0:
-        logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes_id list is returned')
-    logging.info(f'get theme_id list {themes_id} for panel \'{panel_name}\'')
-    return themes_id
+    themes_list = []
+    for row in qr.all():
+        themes_list.append({'id': row.PanelSet.id_theme,
+                            'name': session.get(Themes, row.PanelSet.id_theme).name,
+                            'name_report': session.get(Themes, row.PanelSet.id_theme).name_report})
+    if len(themes_list) == 0:
+        logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes list is returned')
+    logging.info(f'get themes list {themes_list} for panel \'{panel_name}\'')
+    return themes_list
 
 
 @dispatch(int)

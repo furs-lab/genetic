@@ -27,23 +27,19 @@ def test_get_gene_function_no_such_rs():
     assert res == ['']
 
 
-def test_get_themes_id():
-    res = [database.get_themes_id('НГ14-16'), database.get_themes_id('НГ 31 ген'),
-           database.get_themes_id('80 Нутригенетика: избыточный вес и здоровье (max)')]
+def test_get_themes():
+    res1 = database.get_themes('НГ 31 ген')
+    res2 = database.get_themes('НГ14-16')
+    res3 = database.get_themes('cewevgebtebyt')
+    res = [[item['id'] for item in res1], [item['id'] for item in res2], [item['id'] for item in res3]]
     database.stop()
-    assert res == [[10], [10, 20, 28], [33, 34]]
+    assert res == [[10, 20, 28], [10], []]
 
 
 def test_get_themes_id_by_id():
     res = database.get_themes_id(13)
     database.stop()
     assert res == [10, 20, 28]
-
-
-def test_get_themes_id_no_such_panel():
-    res = database.get_themes_id('jrgnrthjvgre')
-    database.stop()
-    assert res == []
 
 
 def test_get_themes_id_by_id_no_such_id():
