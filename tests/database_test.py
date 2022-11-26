@@ -17,17 +17,13 @@ def test_get_gene_function_two_arg():
 def test_get_gene_function_no_such_gen():
     res = database.get_gene('jkbr3tvjhr4v')
     database.stop()
-    assert res == [{'id': 0, 'name': '', 'rs_position': '', 'gene': '', 'polimorphism': '',
-            'genotype1': '', 'genotype2': '', 'genotype3': '',
-            'freq1': 0, 'freq2': 0, 'freq3': 0, 'function': ''}]
+    assert res == []
 
 
 def test_get_gene_function_no_such_rs():
     res = database.get_gene('ADRB2', 'huguvghv')
     database.stop()
-    assert res == [{'id': 0, 'name': '', 'rs_position': '', 'gene': '', 'polimorphism': '',
-            'genotype1': '', 'genotype2': '', 'genotype3': '',
-            'freq1': 0, 'freq2': 0, 'freq3': 0, 'function': ''}]
+    assert res == []
 
 
 def test_get_themes():

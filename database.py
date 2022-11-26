@@ -19,23 +19,13 @@ def get_gene(gene_name, rs_pos=None):
     qr = session.query(Genes).filter(Genes.name == gene_name)
     if rs_pos is not None:
         qr = qr.filter(Genes.rs_position == rs_pos)
-    gene = [row.function for row in qr.all()]
-    gene = []
-    for row in qr.all():
-        gene.append({'id': row.id, 'name': row.name, 'rs_position': row.rs_position,
-                'gene': row.gene, 'polimorphism': row.polimorphism,
-                'genotype1': row.genotype1, 'genotype2': row.genotype2, 'genotype3': row.genotype3,
-                'freq1': float(row.freq1), 'freq2': float(row.freq1),
-                'freq3': float(row.freq1), 'function': row.function})
-
+    gene = [row.__dict__ for row in qr.all()]
     if len(gene) > 1:
         rs_pos = [row.rs_position for row in qr.all()]
         logging.warning(f'more than one gene found because there are several rs_positions {rs_pos}')
     if len(gene) == 0:
-        logging.warning(f'gene: \'{gene_name}\', rs_position: \'{rs_pos}\' does not exist, empty dict returned')
-        gene = [{'id': 0, 'name': '', 'rs_position': '', 'gene': '', 'polimorphism': '',
-            'genotype1': '', 'genotype2': '', 'genotype3': '',
-            'freq1': 0, 'freq2': 0, 'freq3': 0, 'function': ''}]
+        logging.warning(f'gene: \'{gene_name}\', rs_position: \'{rs_pos}\' does not exist, empty list returned')
+        gene = []
     logging.info(f'get gene: \'{gene_name}\', rs_position: \'{rs_pos}\'')
     return gene
 
@@ -65,12 +55,9 @@ def get_themes(panel_id):
 
 
 def get_subthemes(theme_id):
-    qr = session.query(ThemeSet).filter(ThemeSet.id_theme == theme_id)
-    subthemes_list = []
-    for row in qr.all():
-        subthemes_list.append({'id': row.id_subtheme,
-                               'name': session.get(SubThemes, row.id_subtheme).name,
-                               'name_report': session.get(SubThemes, row.id_subtheme).name_report})
+    qr = session.query(ThemeSet, SubThemes).filter(SubThemes.id == ThemeSet.id_subtheme).filter(
+        ThemeSet.id_theme == theme_id)
+    subthemes_list = [row.SubThemes.__dict__ for row in qr.all()]
     if len(subthemes_list) == 0:
         logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes_id list is returned')
     logging.info(f'get subthemes_id list {subthemes_list} for theme with id: {theme_id}')
