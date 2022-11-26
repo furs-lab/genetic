@@ -15,7 +15,9 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_subthemes(15)
+    res = database.get_risks(7)
     print(res)
+    for rr in res:
+        print(rr['id'], rr['name'], rr['description'])
     database.stop()
     logging.info("finish main")
