@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_subthemes_id(10)
+    res = database.get_gene('ADRB2')
     print(res)
     database.stop()
     logging.info("finish main")
