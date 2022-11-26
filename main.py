@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_themes('НГ 31 ген')
+    res = database.get_themes(13)
     print(res)
     database.stop()
     logging.info("finish main")
