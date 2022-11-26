@@ -40,7 +40,7 @@ def get_themes(panel_name):
                             'name_report': session.get(Themes, row.PanelSet.id_theme).name_report})
     if len(themes_list) == 0:
         logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes list is returned')
-    logging.info(f'get themes list {themes_list} for panel \'{panel_name}\'')
+    logging.info(f'get themes list {[itm["name"] for itm in themes_list]} for panel \'{panel_name}\'')
     return themes_list
 
 
@@ -59,6 +59,16 @@ def get_subthemes(theme_id):
         ThemeSet.id_theme == theme_id)
     subthemes_list = [row.SubThemes.__dict__ for row in qr.all()]
     if len(subthemes_list) == 0:
-        logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes_id list is returned')
-    logging.info(f'get subthemes_id list {subthemes_list} for theme with id: {theme_id}')
+        logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes list is returned')
+    logging.info(f'get subthemes list {[itm["name"] for itm in subthemes_list]} for theme with id: {theme_id}')
     return subthemes_list
+
+
+def get_risks(subtheme_id):
+    qr = session.query(SubThemeSet, Risks).filter(Risks.id == SubThemeSet.id_risk).filter(
+        SubThemeSet.id_subtheme == subtheme_id)
+    risks_list = [row.Risks.__dict__ for row in qr.all()]
+    if len(risks_list) == 0:
+        logging.warning(f'there is no risks for subtheme with id: {subtheme_id}, empty risks list is returned')
+    logging.info(f'get risks list {[itm["id"] for itm in risks_list]} for subtheme with id: {subtheme_id}')
+    return risks_list

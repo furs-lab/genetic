@@ -52,5 +52,16 @@ def test_get_subthemes():
     assert res == [[7, 8, 17], []]
 
 
+def test_get_risks():
+    res = [rr['id'] for rr in database.get_risks(7)]
+    database.stop()
+    assert res == [17, 22, 24, 23, 30, 25, 27, 31, 32, 29]
+
+def test_get_risks_no_such_subtheme():
+    res = [rr['id'] for rr in database.get_risks(1)]
+    database.stop()
+    assert res == []
+
+
 if __name__ == '__main__':
     pytest.main()
