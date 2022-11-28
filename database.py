@@ -14,6 +14,7 @@ def stop():
     engine.dispose()
     logging.info(f'close database session')
 
+
 @dispatch(str)
 def get_gene(gene_name):
     qr = session.query(Genes).filter(Genes.name == gene_name)
@@ -25,6 +26,8 @@ def get_gene(gene_name):
         logging.warning(f'gene: \'{gene_name}\' does not exist, empty list returned')
     logging.info(f'get gene: \'{gene_name}\'')
     return gene
+
+
 @dispatch(str, str)
 def get_gene(gene_name, rs_pos):
     qr = session.query(Genes).filter(Genes.name == gene_name).filter(Genes.rs_position == rs_pos)
@@ -34,6 +37,7 @@ def get_gene(gene_name, rs_pos):
     logging.info(f'get gene: \'{gene_name}\', rs_position: \'{rs_pos}\'')
     return gene
 
+
 @dispatch(int)
 def get_gene(gene_id):
     qr = session.query(Genes).filter(Genes.id == gene_id)
@@ -42,6 +46,7 @@ def get_gene(gene_id):
         logging.warning(f'gene with id: \'{gene_id}\' does not exist, empty list returned')
     logging.info(f'get gene with id: {gene_id}')
     return gene
+
 
 @dispatch(str)
 def get_themes(panel_name):

@@ -13,6 +13,7 @@ def test_get_gene_function_two_arg():
     database.stop()
     assert res == 'Адренергический рецептор 2'
 
+
 def test_get_gene_by_id():
     res = database.get_gene(9)[0]['gene']
     database.stop()
@@ -29,6 +30,7 @@ def test_get_gene_no_such_rs():
     res = database.get_gene('ADRB2', 'huguvghv')
     database.stop()
     assert res == []
+
 
 def test_get_gene_by_id_no_such_gene():
     res = database.get_gene(1)
@@ -66,6 +68,7 @@ def test_get_risks():
     res = [rr['id'] for rr in database.get_risks(7)]
     database.stop()
     assert res == [17, 22, 24, 23, 30, 25, 27, 31, 32, 29]
+
 
 def test_get_risks_no_such_subtheme():
     res = [rr['id'] for rr in database.get_risks(1)]
