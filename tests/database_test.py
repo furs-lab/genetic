@@ -13,15 +13,25 @@ def test_get_gene_function_two_arg():
     database.stop()
     assert res == 'Адренергический рецептор 2'
 
+def test_get_gene_by_id():
+    res = database.get_gene(9)[0]['gene']
+    database.stop()
+    assert res == 'Аполипопротеин a2'
 
-def test_get_gene_function_no_such_gen():
+
+def test_get_gene_no_such_gen():
     res = database.get_gene('jkbr3tvjhr4v')
     database.stop()
     assert res == []
 
 
-def test_get_gene_function_no_such_rs():
+def test_get_gene_no_such_rs():
     res = database.get_gene('ADRB2', 'huguvghv')
+    database.stop()
+    assert res == []
+
+def test_get_gene_by_id_no_such_gene():
+    res = database.get_gene(1)
     database.stop()
     assert res == []
 
