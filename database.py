@@ -15,18 +15,36 @@ def stop():
     logging.info(f'close database session')
 
 
-def get_gene(gene_name, rs_pos=None):
+@dispatch(str)
+def get_gene(gene_name):
     qr = session.query(Genes).filter(Genes.name == gene_name)
-    if rs_pos is not None:
-        qr = qr.filter(Genes.rs_position == rs_pos)
     gene = [row.__dict__ for row in qr.all()]
     if len(gene) > 1:
         rs_pos = [row.rs_position for row in qr.all()]
         logging.warning(f'more than one gene found because there are several rs_positions {rs_pos}')
     if len(gene) == 0:
+        logging.warning(f'gene: \'{gene_name}\' does not exist, empty list returned')
+    logging.info(f'get gene: \'{gene_name}\'')
+    return gene
+
+
+@dispatch(str, str)
+def get_gene(gene_name, rs_pos):
+    qr = session.query(Genes).filter(Genes.name == gene_name).filter(Genes.rs_position == rs_pos)
+    gene = [row.__dict__ for row in qr.all()]
+    if len(gene) == 0:
         logging.warning(f'gene: \'{gene_name}\', rs_position: \'{rs_pos}\' does not exist, empty list returned')
-        gene = []
     logging.info(f'get gene: \'{gene_name}\', rs_position: \'{rs_pos}\'')
+    return gene
+
+
+@dispatch(int)
+def get_gene(gene_id):
+    qr = session.query(Genes).filter(Genes.id == gene_id)
+    gene = [row.__dict__ for row in qr.all()]
+    if len(gene) == 0:
+        logging.warning(f'gene with id: \'{gene_id}\' does not exist, empty list returned')
+    logging.info(f'get gene with id: {gene_id}')
     return gene
 
 
@@ -70,5 +88,17 @@ def get_risks(subtheme_id):
     risks_list = [row.Risks.__dict__ for row in qr.all()]
     if len(risks_list) == 0:
         logging.warning(f'there is no risks for subtheme with id: {subtheme_id}, empty risks list is returned')
-    logging.info(f'get risks list {[itm["id"] for itm in risks_list]} for subtheme with id: {subtheme_id}')
+    logging.info(f'get risks list (ids:  {[itm["id"] for itm in risks_list]}) for subtheme with id: {subtheme_id}')
     return risks_list
+
+
+def get_genes_for_risk(risk_id):
+    qr = session.query(RiskSet).filter(RiskSet.id_risk == risk_id)
+    genes_list = []
+    for row in qr.all():
+        genes_list.append(row.__dict__)
+        genes_list[-1].update(get_gene(row.id_gene)[0])
+    if len(genes_list) == 0:
+        logging.warning(f'there is no genes for risk id: {risk_id}, empty genes list is returned')
+    logging.info(f'get genes list (ids: {[itm["id"] for itm in genes_list]}) for risk with id: {risk_id}')
+    return genes_list

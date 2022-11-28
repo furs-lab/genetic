@@ -33,11 +33,17 @@ class SubThemes:
 class SubThemeSet:
     pass
 
+
 class Risks:
     pass
 
-# engine = create_engine('mysql+pymysql://debian-sys-maint:UmX4EHHEbeT8Ad0F@localhost/genetic')
-engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
+
+class RiskSet:
+    pass
+
+
+engine = create_engine('mysql+pymysql://debian-sys-maint:UmX4EHHEbeT8Ad0F@localhost/genetic')
+# engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
 meta = MetaData(engine)
 
 clinics = Table('clinics', meta, autoload=True)
@@ -49,6 +55,7 @@ theme_set = Table('theme_set', meta, autoload=True)
 subthemes = Table('subthemes', meta, autoload=True)
 subtheme_set = Table('subtheme_set', meta, autoload=True)
 risks = Table('risks', meta, autoload=True)
+risk_set = Table('risk_set', meta, autoload=True)
 
 mapper(Clinics, clinics)
 mapper(Panels, panels)
@@ -59,3 +66,4 @@ mapper(ThemeSet, theme_set)
 mapper(SubThemes, subthemes)
 mapper(SubThemeSet, subtheme_set)
 mapper(Risks, risks)
+mapper(RiskSet, risk_set)

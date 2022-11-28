@@ -14,14 +14,26 @@ def test_get_gene_function_two_arg():
     assert res == 'Адренергический рецептор 2'
 
 
-def test_get_gene_function_no_such_gen():
+def test_get_gene_by_id():
+    res = database.get_gene(9)[0]['gene']
+    database.stop()
+    assert res == 'Аполипопротеин a2'
+
+
+def test_get_gene_no_such_gen():
     res = database.get_gene('jkbr3tvjhr4v')
     database.stop()
     assert res == []
 
 
-def test_get_gene_function_no_such_rs():
+def test_get_gene_no_such_rs():
     res = database.get_gene('ADRB2', 'huguvghv')
+    database.stop()
+    assert res == []
+
+
+def test_get_gene_by_id_no_such_gene():
+    res = database.get_gene(1)
     database.stop()
     assert res == []
 
@@ -57,8 +69,19 @@ def test_get_risks():
     database.stop()
     assert res == [17, 22, 24, 23, 30, 25, 27, 31, 32, 29]
 
+
 def test_get_risks_no_such_subtheme():
     res = [rr['id'] for rr in database.get_risks(1)]
+    database.stop()
+    assert res == []
+
+def test_get_genes_for_risk():
+    res = [[rr['id_gene'], rr['rs_position']] for rr in database.get_genes_for_risk(17)]
+    database.stop()
+    assert res == [[14, 'rs9939609'], [9, 'rs5082'], [10, 'rs662799'], [17, 'rs17782313']]
+
+def test_get_genes_for_risk_no_such_risk():
+    res = [rr['id_gene'] for rr in database.get_genes_for_risk(1)]
     database.stop()
     assert res == []
 
