@@ -15,7 +15,9 @@ if __name__ == '__main__':
 
     import database
 
-    res = database.get_gene(9)
+    res = database.get_genes_for_risk(17)
     print(res)
+    for rr in res:
+        print(rr['id_gene'], rr['function'])
     database.stop()
     logging.info("finish main")

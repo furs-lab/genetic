@@ -88,5 +88,17 @@ def get_risks(subtheme_id):
     risks_list = [row.Risks.__dict__ for row in qr.all()]
     if len(risks_list) == 0:
         logging.warning(f'there is no risks for subtheme with id: {subtheme_id}, empty risks list is returned')
-    logging.info(f'get risks list {[itm["id"] for itm in risks_list]} for subtheme with id: {subtheme_id}')
+    logging.info(f'get risks list (ids:  {[itm["id"] for itm in risks_list]}) for subtheme with id: {subtheme_id}')
     return risks_list
+
+
+def get_genes_for_risk(risk_id):
+    qr = session.query(RiskSet).filter(RiskSet.id_risk == risk_id)
+    genes_list = []
+    for row in qr.all():
+        genes_list.append(row.__dict__)
+        genes_list[-1].update(get_gene(row.id_gene)[0])
+    if len(genes_list) == 0:
+        logging.warning(f'there is no genes for risk id: {risk_id}, empty genes list is returned')
+    logging.info(f'get genes list (ids: {[itm["id"] for itm in genes_list]}) for risk with id: {risk_id}')
+    return genes_list

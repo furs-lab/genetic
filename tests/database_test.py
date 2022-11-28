@@ -75,6 +75,16 @@ def test_get_risks_no_such_subtheme():
     database.stop()
     assert res == []
 
+def test_get_genes_for_risk():
+    res = [[rr['id_gene'], rr['rs_position']] for rr in database.get_genes_for_risk(17)]
+    database.stop()
+    assert res == [[14, 'rs9939609'], [9, 'rs5082'], [10, 'rs662799'], [17, 'rs17782313']]
+
+def test_get_genes_for_risk_no_such_risk():
+    res = [rr['id_gene'] for rr in database.get_genes_for_risk(1)]
+    database.stop()
+    assert res == []
+
 
 if __name__ == '__main__':
     pytest.main()
