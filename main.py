@@ -1,5 +1,7 @@
 import logging
 from logging.config import dictConfig
+
+import plotrisk
 from analysis import Analysis
 from logger_config import LOGGING_CONFIG
 
@@ -14,7 +16,9 @@ if __name__ == '__main__':
     print(Analysis.data['Gen'].tolist())
 
     import database
+    import plotrisk
 
+    plotrisk.plotrisk(0.3, 2.7, 1.2)
     res = database.get_themes(13)
     print(res)
     for rr in res:
