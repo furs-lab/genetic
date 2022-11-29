@@ -2,18 +2,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plotrisk(min, max, cur):
+def plot_risk(min, max, cur):
     ngrid = 100
-    curn = (cur - min)*ngrid/max
     plt.subplots()
-    gradient = np.linspace(0, 1, ngrid)
-    gradient = np.vstack((gradient, gradient))
-    plt.imshow(gradient, aspect=2, cmap='rainbow')
-    plt.text(ngrid - ngrid / 10, 4, str(max), fontsize=18)
-    plt.text(0, 4, str(min), fontsize=18)
-    plt.text(curn-5, -2, str(cur), fontsize=18)
-    plt.scatter([curn], [0.5], marker='o', c='navy', s=300)
-    # plt.scatter([curn], [2], marker='^', c='k', s=200)
-    # plt.scatter([curn], [-1], marker='v', c='k', s=200)
+    x = np.linspace(min, max, ngrid)
+    y = np.zeros(ngrid)
+    t = np.arange(ngrid)
+    print(int(cur*ngrid/(max-min)))
+    plt.scatter(x, y, marker='s', c=t, s=100, cmap='rainbow')
+    plt.scatter([cur], [0], marker='o', s=500)
+    plt.text(max, -0.01, str(max), fontsize=18)
+    plt.text(min, -0.01, str(min), fontsize=18)
+    plt.text(cur, 0.007, str(cur), fontsize=18)
     plt.axis('off')
     plt.show()
