@@ -25,7 +25,7 @@ if __name__ == '__main__':
     print(res1)
     res2 = calculations.modify_genes_dict(res, res1)
     for rr in res2:
-        print(rr['name'], '--->', rr['inter'])
+        print(rr['name'],"->" , rr['genotype'], '--->', rr['inter'])
 
     database.stop()
     logging.info("finish main")
