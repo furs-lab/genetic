@@ -28,12 +28,13 @@ def modify_genes_dict(genes_list, genotypes_list):
     for gene, genotype in zip(genes_list, genotypes_list):
         if genotype != '':
             gene.update({'inter': gene['inter_' + genotype]})
-            gene.update({'genotype': gene[genotype]})
+            gene.update({'result': gene[genotype]})
             logging.info(f'interpretation for gene \'{gene["name"]}\' is selected')
         else:
             gene.update({'inter': ''})
-            gene.update({'genotype': ''})
+            gene.update({'result': ''})
             logging.warning(f'genotype for gene \'{gene["name"]}\' did not defined, return empty interpretation')
+        gene.update({'genotype': genotype})
         for i in range(3):
             gene.pop('inter_genotype' + str(i+1))
     return genes_list
