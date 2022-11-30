@@ -25,7 +25,7 @@ def test_calc_genotype_all_panels(test_filename):
     genes_list = database.get_genes_for_risk(82)
     res = calculations.calc_genotype(genes_list, analysis)
     database.stop()
-    assert res == ['genotype1', 'genotype1', 'genotype2', 'genotype3', 'genotype2']
+    assert res == ['', 'genotype1', 'genotype1', 'genotype2', 'genotype3', 'genotype2']
 
 
 if __name__ == '__main__':
