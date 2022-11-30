@@ -28,6 +28,7 @@ def modify_genes_dict(genes_list, genotypes_list):
     for gene, genotype in zip(genes_list, genotypes_list):
         if genotype != '':
             gene.update({'inter': gene['inter_' + genotype]})
+            logging.info(f'interpretation for gene \'{gene["name"]}\' is selected')
         else:
             gene.update({'inter': ''})
             logging.warning(f'genotype for gene \'{gene["name"]}\' did not defined, return empty interpretation')
