@@ -76,3 +76,13 @@ def modify_risks_dict(risks_list, risk_values):
                 risk[rn + '_short_recommendation']
 
     return risks_list
+
+def create_jinja2_dict(analysis):
+    temp_vars = {'name': analysis.patient_name,
+                 'birthday': analysis.patient_birthday,
+                 'sex': analysis.patient_sex,
+                 'analysis_number': analysis.number,
+                 'analysis_date': '??/??/????', #from there it should be taken?
+                 }
+
+    return temp_vars
