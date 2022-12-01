@@ -15,8 +15,7 @@ if __name__ == '__main__':
     analysis = Analysis("tst_analysis.xlsx")
     panels = analysis.get_panels()
     # analysis.get_panel_data('fat')
-    analysis.sort_by_gens()
-    print(analysis.data['Gen'].tolist())
+    # analysis.sort_by_gens()
 
     import database
 

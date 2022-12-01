@@ -1,6 +1,8 @@
 import logging
 from random import randint
 
+import database
+
 genotype_names = ['genotype1', 'genotype2', 'genotype3']
 risk_names = ['low', 'mid', 'high', 'upper']
 
@@ -12,13 +14,13 @@ def calc_genotype(genes_list, analysis):
             (analysis.data['Gen'] == gene['name']) & (analysis.data['RS'] == gene['rs_position']), 'Result']
         if res_df.size == 0:
             genotypes_list.append('')
-            logging.warning(f'gene \'{gene["name"]}\' is not found in analysis, genotype = \'\'')
+            logging.warning(f'gene \'{gene["name"]}\', {gene["rs_position"]} is not found in analysis, genotype = \'\'')
             continue
 
         for genotype in genotype_names:
             if res_df.values[0] == gene[genotype]:
                 genotypes_list.append(genotype)
-                logging.info(f'gene \'{gene["name"]}\', genotype = \'{genotype}\'')
+                logging.info(f'gene \'{gene["name"]}\', {gene["rs_position"]}, genotype = \'{genotype}\'')
                 break
 
     return genotypes_list
@@ -42,10 +44,11 @@ def modify_genes_dict(genes_list, genotypes_list):
     for gene, genotype in zip(genes_list, genotypes_list):
         if genotype in genotype_names:
             gene.update({'inter': gene['inter_' + genotype], 'result': gene[genotype]})
-            logging.info(f'interpretation for gene \'{gene["name"]}\' is selected')
+            logging.info(f'interpretation for gene \'{gene["name"]}\', {gene["rs_position"]} is selected')
         else:
             gene.update({'inter': '', 'result': ''})
-            logging.warning(f'genotype for gene \'{gene["name"]}\' did not defined, return empty interpretation')
+            logging.warning(f'genotype for gene \'{gene["name"]}\', {gene["rs_position"]} did not defined, return '
+                            f'empty interpretation')
 
         gene.update({'genotype': genotype})
         for gt in genotype_names:
@@ -83,6 +86,40 @@ def create_jinja2_dict(analysis):
                  'sex': analysis.patient_sex,
                  'analysis_number': analysis.number,
                  'analysis_date': '??/??/????', #from there it should be taken?
+                 'scandat': analysis.data
                  }
+    logging.info(f'start creating dict for report for {analysis.patient_name}, analysis no. {analysis.number}')
 
+    # !!!FOR TEST PURPOSES ONLY
+    analysis.panels = ['НГ 31 ген']  #!!!FOR TEST PURPOSES ONLY
+    # !!!FOR TEST PURPOSES ONLY
+
+    panels = []
+    for panel in analysis.panels:
+        themes = database.get_themes(panel)
+        panels.append({"name": panel, "themes": themes})
+        for theme in themes:
+            subthemes = database.get_subthemes(theme['id'])
+            theme.update({'subthemes': subthemes})
+            for subthem in subthemes:
+                risks = database.get_risks(subthem['id'])
+                risks = modify_risks_dict(risks, calc_risk(risks, analysis))
+                subthem.update({'risks': risks})
+                for risk in risks:
+                    genes = database.get_genes_for_risk(risk['id'])
+                    genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
+                    risk.update({'genes': genes})
+
+    # for panel in panels:
+    #     print(panel['name'])
+    #     for theme in themes:
+    #         print ('\t', theme['id'])
+    #         for subtheme in theme['subthemes']:
+    #             print('\t\t', subtheme['id'])
+    #             for risk in subtheme['risks']:
+    #                 print('\t\t\t', risk['id'])
+    #                 for gene in risk['genes']:
+    #                     print('\t\t\t\t', gene['id'])
+
+    logging.info(f'dict created')
     return temp_vars

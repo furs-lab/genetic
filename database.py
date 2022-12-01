@@ -58,7 +58,7 @@ def get_themes(panel_name):
                             'name_report': session.get(Themes, row.PanelSet.id_theme).name_report})
     if len(themes_list) == 0:
         logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes list is returned')
-    logging.info(f'get themes list {[itm["name"] for itm in themes_list]} for panel \'{panel_name}\'')
+    logging.info(f'get themes list {[itm["id"] for itm in themes_list]} for panel \'{panel_name}\'')
     return themes_list
 
 
@@ -78,7 +78,7 @@ def get_subthemes(theme_id):
     subthemes_list = [row.SubThemes.__dict__ for row in qr.all()]
     if len(subthemes_list) == 0:
         logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes list is returned')
-    logging.info(f'get subthemes list {[itm["name"] for itm in subthemes_list]} for theme with id: {theme_id}')
+    logging.info(f'get subthemes list {[itm["id"] for itm in subthemes_list]} for theme with id: {theme_id}')
     return subthemes_list
 
 
