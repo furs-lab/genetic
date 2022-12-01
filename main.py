@@ -1,13 +1,15 @@
 import logging
 from logging.config import dictConfig
+import jinja2
 
 import calculations
 import plotrisk
 from analysis import Analysis
-from logger_config import LOGGING_CONFIG
+from config import LOGGING_CONFIG, JINJA2_CONFIG, FILES
 
 if __name__ == '__main__':
     dictConfig(LOGGING_CONFIG)
+    latex_jinja_env = jinja2.Environment(JINJA2_CONFIG)
 
     logging.info("start main")
     analysis = Analysis("tst_analysis.xlsx")
@@ -17,8 +19,6 @@ if __name__ == '__main__':
     print(analysis.data['Gen'].tolist())
 
     import database
-    import calculations
-
     res = database.get_risks(8)
     #print(res)
     res1 = calculations.calc_risk(res, analysis)
