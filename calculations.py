@@ -1,4 +1,5 @@
 import logging
+from random import randint
 
 
 def calc_genotype(genes_list, analysis):
@@ -20,6 +21,16 @@ def calc_genotype(genes_list, analysis):
     return genotypes_list
 
 
+def calc_risk(risks_list, analysis):
+    risk_names = ['low', 'mid', 'high', 'upper']
+    risk_values = []
+    for risk in risks_list:
+        # do some calculations or call some function for these calculations
+        risk_values.append(risk_names[randint(0, 3)])
+
+    return risk_values
+
+
 def modify_genes_dict(genes_list, genotypes_list):
     if len(genes_list) != len(genotypes_list):
         logging.warning(f'different lengths of genes_list and genotypes_list, modifications did not perform')
@@ -34,7 +45,9 @@ def modify_genes_dict(genes_list, genotypes_list):
             gene.update({'inter': ''})
             gene.update({'result': ''})
             logging.warning(f'genotype for gene \'{gene["name"]}\' did not defined, return empty interpretation')
+
         gene.update({'genotype': genotype})
         for i in range(3):
-            gene.pop('inter_genotype' + str(i+1))
+            gene.pop('inter_genotype' + str(i + 1))
+
     return genes_list

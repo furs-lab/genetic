@@ -19,13 +19,13 @@ if __name__ == '__main__':
     import database
     import calculations
 
-    res = database.get_genes_for_risk(82)
+    res = database.get_risks(8)
     print(res)
-    res1 = calculations.calc_genotype(res, analysis)
+    res1 = calculations.calc_risk(res, analysis)
     print(res1)
-    res2 = calculations.modify_genes_dict(res, res1)
-    for rr in res2:
-        print(rr['name'],"->" , rr['result'], '--->', rr['inter'])
+    # res2 = calculations.modify_genes_dict(res, res1)
+    # for rr in res2:
+    #     print(rr['name'],"->" , rr['result'], '--->', rr['inter'])
 
     database.stop()
     logging.info("finish main")
