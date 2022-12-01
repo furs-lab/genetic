@@ -7,6 +7,14 @@ genotype_names = ['genotype1', 'genotype2', 'genotype3']
 risk_names = ['low', 'mid', 'high', 'upper']
 
 
+def process_text(text):
+    if text == None:
+        logging.warning(f'\'None\' found when text from database processed, return \'\'')
+        return ''
+    text = text.replace('\n', '').replace('%', '\%')
+    return text
+
+
 def calc_genotype(genes_list, analysis):
     genotypes_list = []
     for gene in genes_list:
@@ -43,7 +51,8 @@ def modify_genes_dict(genes_list, genotypes_list):
 
     for gene, genotype in zip(genes_list, genotypes_list):
         if genotype in genotype_names:
-            gene.update({'inter': gene['inter_' + genotype], 'result': gene[genotype]})
+            gene.update({'inter': process_text(gene['inter_' + genotype]),
+                         'result': process_text(gene[genotype])})
             logging.info(f'interpretation for gene \'{gene["name"]}\', {gene["rs_position"]} is selected')
         else:
             gene.update({'inter': '', 'result': ''})
@@ -64,10 +73,10 @@ def modify_risks_dict(risks_list, risk_values):
 
     for risk, risk_value in zip(risks_list, risk_values):
         if risk_value in risk_names:
-            risk.update({'inter': risk[risk_value + '_inter'],
-                         'briefly': risk[risk_value + '_briefly'],
-                         'recommendation': risk[risk_value + '_recommendation'],
-                         'short_recommendation': risk[risk_value + '_short_recommendation']})
+            risk.update({'inter': process_text(risk[risk_value + '_inter']),
+                         'briefly': process_text(risk[risk_value + '_briefly']),
+                         'recommendation': process_text(risk[risk_value + '_recommendation']),
+                         'short_recommendation': process_text(risk[risk_value + '_short_recommendation'])})
             logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
         else:
             risk.update({'inter': '', 'briefly': '', 'recommendation': '', 'short_recommendation': ''})
@@ -80,18 +89,19 @@ def modify_risks_dict(risks_list, risk_values):
 
     return risks_list
 
+
 def create_jinja2_dict(analysis):
     temp_vars = {'name': analysis.patient_name,
                  'birthday': analysis.patient_birthday,
                  'sex': analysis.patient_sex,
                  'analysis_number': analysis.number,
-                 'analysis_date': '??/??/????', #from there it should be taken?
+                 'analysis_date': '??/??/????',  # from there it should be taken?
                  'scandat': analysis.data
                  }
     logging.info(f'start creating dict for report for {analysis.patient_name}, analysis no. {analysis.number}')
 
     # !!!FOR TEST PURPOSES ONLY
-    analysis.panels = ['НГ 31 ген']  #!!!FOR TEST PURPOSES ONLY
+    analysis.panels = ['НГ 31 ген']  # !!!FOR TEST PURPOSES ONLY
     # !!!FOR TEST PURPOSES ONLY
 
     panels = []
@@ -110,6 +120,9 @@ def create_jinja2_dict(analysis):
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
 
+    temp_vars.update({'panels': panels})
+    for theme in panels[0]['themes']:
+        print(theme['name'])
     # for panel in panels:
     #     print(panel['name'])
     #     for theme in themes:

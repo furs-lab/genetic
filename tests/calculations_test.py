@@ -38,7 +38,7 @@ def test_modify_genes_dict(test_filename):
     res1 = calculations.modify_genes_dict(genes_list, gt)
     res = [len(rr['inter']) for rr in res1]
     database.stop()
-    assert res == [0, 0, 106, 0, 0, 105]
+    assert res == [0, 0, 104, 0, 0, 102]
 
 
 def test_modify_genes_dict_all_panels(test_filename):
@@ -49,7 +49,7 @@ def test_modify_genes_dict_all_panels(test_filename):
     res1 = calculations.modify_genes_dict(genes_list, gt)
     res = [len(rr['inter']) for rr in res1]
     database.stop()
-    assert res == [0, 52, 106, 286, 294, 105]
+    assert res == [0, 52, 104, 281, 291, 102]
 
 
 if __name__ == '__main__':

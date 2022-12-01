@@ -105,4 +105,102 @@
 Мы гарантируем конфиденциальность Ваших личных данных, полученных в настоящем тесте. Обработка Ваших персональных данных осуществляется в соответствии с действующим законодательством РФ.
 Благодарим Вас за то, что воспользовались нашей услугой!
 
+\pagebreak
+\begin{center}
+	\large{Суммарный отчет по результатам молекулярно-генетического анализа}
+\end{center}
+
+\begin{center}
+	\newcolumntype{C}{>{\arraybackslash}p{3.5cm}}
+	\begin{longtable} { |C||p{2.5cm}|p{1.5cm}|p{2.4cm}|p{1.8cm}| }%{ |C||c|c|c|c| }%{ |C||p{2.5cm}|p{1.5cm}|p{2.4cm}|p{1.8cm}| }
+		\hline
+		Генетический риск & Пониженный \cellcolor{blue!20} 
+		& Средний \cellcolor{green!40} 
+		& Повышенный \cellcolor{yellow!40} 
+		& Высокий \cellcolor{red!50}\\
+		\hline
+		
+		\BLOCK{ for theme in panels[0]['themes']: }
+			\multicolumn{5}{|c|}{\VAR{theme["name_report"]}} \\
+			\hline
+			\BLOCK{ for subtheme in theme['subthemes']: }
+				\rowcolor{gray!50}
+				\multicolumn{5}{|l|}{\VAR{subtheme["name_report"]}}\\
+				\hline
+				\BLOCK{ for risk in subtheme['risks']: }
+					\VAR{risk["name_report"]} 
+					&  
+					\BLOCK{ if risk["risk_value"] == 'low'}
+					V
+					\cellcolor{blue!20}
+					\BLOCK{ endif}    
+					&
+					\BLOCK{ if risk["risk_value"] == 'mid'}
+					V
+					\cellcolor{green!40}
+					\BLOCK{ endif} 
+					&   
+					\BLOCK{ if risk["risk_value"] == 'high'}
+					V
+					\cellcolor{yellow!40}
+					\BLOCK{ endif} 
+					& 
+					\BLOCK{ if risk["risk_value"] == 'upper'}
+					V
+					\cellcolor{red!50}
+					\BLOCK{ endif}\\
+					\hline
+				
+				\BLOCK{ endfor }
+			\BLOCK{ endfor }
+		\BLOCK{ endfor }
+
+	\end{longtable}
+\end{center}
+
+\noindent
+\parbox[b][3cm][t]{10mm}{
+	\includegraphics[height=25mm]{exclamation.png}}
+\hfill
+\parbox[b][3cm][t]{100mm}{
+	Описанные признаки (заболевания) относятся к многофакторным состояниям. Выявленные генетические маркеры не являются диагностическими критериями каких-либо заболеваний. Заключение дано на основании проанализированных генетических маркеров. Другие генетические и не генетические факторы могут влиять на риск оцененных признаков.}
+
+\vspace{15mm}
+
+\textbf{Заключение и рекомендации}\\
+\BLOCK{ for theme in panels[0]['themes']: }
+	\textbf{\VAR{theme["name_report"]}}\\
+	\textit{Рекомендации:}
+		\BLOCK{ for subtheme in theme['subthemes']: }
+			\BLOCK{ for risk in subtheme['risks']: }
+				\BLOCK{ if risk["risk_value"] == 'upper' or risk["risk_value"] == 'high'}
+					\VAR{risk["short_recommendation"]}\\
+				\BLOCK{ endif}
+			\BLOCK{ endfor } 
+		\BLOCK{ endfor  }
+\BLOCK{ endfor }
+
+\pagebreak
+
+\BLOCK{ for theme in panels[0]['themes']: }
+	\begin{center}
+	\textbf{\VAR{theme["name_report"]}}\\
+	\end{center}
+	\BLOCK{ for subtheme in theme['subthemes']: }
+		\begin{center}
+		\textit{\VAR{subtheme["name_report"]}}\\
+		\end{center}
+		\BLOCK{ for risk in subtheme['risks']: }
+			\begin{center}
+			{\VAR{risk["name_report"]}}\\
+			\end{center}
+			
+			\textbf{Заключение:}\\
+			\VAR{risk["inter"]}\\
+			\VAR{risk["recommendation"]}\\
+			
+			\pagebreak
+		\BLOCK{ endfor } 
+	\BLOCK{ endfor  }
+\BLOCK{ endfor }
 \end{document}
