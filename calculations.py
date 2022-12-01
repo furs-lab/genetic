@@ -1,10 +1,10 @@
 import logging
-from random import randint
+from random import uniform
 
 import database
 
 genotype_names = ['genotype1', 'genotype2', 'genotype3']
-risk_names = ['low', 'mid', 'high', 'upper']
+risk_levels_names = ['low', 'mid', 'high', 'upper']
 
 
 def process_text(text):
@@ -34,14 +34,32 @@ def calc_genotype(genes_list, analysis):
     return genotypes_list
 
 
-def calc_risk(risks_list, analysis):
+def calc_risk_values(risks_list, analysis):
     risk_values = []
     for risk in risks_list:
         # do some calculations or call some function for these calculations
-        risk_values.append(risk_names[randint(0, 3)])
-        logging.info(f'calculate risk value \'{risk_values[-1]}\' for risk id: {risk["id"]}')
+        risk_values.append(uniform(0, 1.5 * float(risk['high_level'])))
+        logging.info(f'calculate risk value \'{risk_values[-1]:.2f}\' for risk id: {risk["id"]}')
 
     return risk_values
+
+
+def calc_risk_levels(risks_list, risk_values):
+    risk_levels = []
+    if len(risks_list) != len(risk_values):
+        logging.warning(f'different lengths of risks_list and risk_values, return []')
+        return []
+    for risk, risk_value in zip(risks_list, risk_values):
+        if risk_value <= float(risk['low_level']):
+            risk_levels.append('low')
+        elif float(risk['low_level']) < risk_value <= float(risk['mid_level']):
+            risk_levels.append('mid')
+        elif float(risk['mid_level']) < risk_value <= float(risk['high_level']):
+            risk_levels.append('high')
+        else:
+            risk_levels.append('upper')
+        logging.info(f'calculate risk level \'{risk_levels[-1]}\' for risk id: {risk["id"]}')
+    return risk_levels
 
 
 def modify_genes_dict(genes_list, genotypes_list):
@@ -67,23 +85,20 @@ def modify_genes_dict(genes_list, genotypes_list):
 
 
 def modify_risks_dict(risks_list, risk_values):
+    risk_levels = calc_risk_levels(risks_list, risk_values)
     if len(risks_list) != len(risk_values):
         logging.warning(f'different lengths of risks_list and risk_values, modifications did not perform')
         return risks_list
 
-    for risk, risk_value in zip(risks_list, risk_values):
-        if risk_value in risk_names:
-            risk.update({'inter': process_text(risk[risk_value + '_inter']),
-                         'briefly': process_text(risk[risk_value + '_briefly']),
-                         'recommendation': process_text(risk[risk_value + '_recommendation']),
-                         'short_recommendation': process_text(risk[risk_value + '_short_recommendation'])})
-            logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
-        else:
-            risk.update({'inter': '', 'briefly': '', 'recommendation': '', 'short_recommendation': ''})
-            logging.warning(f'risk value for risk id: {risk["id"]} did not defined, return empty interpretation')
+    for risk, risk_value, risk_level in zip(risks_list, risk_values, risk_levels):
+        risk.update({'inter': process_text(risk[risk_level + '_inter']),
+                    'briefly': process_text(risk[risk_level + '_briefly']),
+                    'recommendation': process_text(risk[risk_level + '_recommendation']),
+                    'short_recommendation': process_text(risk[risk_level + '_short_recommendation'])})
+        logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
 
-        risk.update({'risk_value': risk_value})
-        for rn in risk_names:
+        risk.update({'risk_value': risk_value, 'risk_level': risk_level})
+        for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
 
@@ -101,7 +116,7 @@ def create_jinja2_dict(analysis):
     logging.info(f'start creating dict for report for {analysis.patient_name}, analysis no. {analysis.number}')
 
     # !!!FOR TEST PURPOSES ONLY
-    analysis.panels = ['НГ 31 ген']  # !!!FOR TEST PURPOSES ONLY
+    analysis.panels = ['Вит. Нов']  # !!!FOR TEST PURPOSES ONLY
     # !!!FOR TEST PURPOSES ONLY
 
     panels = []
@@ -113,7 +128,7 @@ def create_jinja2_dict(analysis):
             theme.update({'subthemes': subthemes})
             for subthem in subthemes:
                 risks = database.get_risks(subthem['id'])
-                risks = modify_risks_dict(risks, calc_risk(risks, analysis))
+                risks = modify_risks_dict(risks, calc_risk_values(risks, analysis))
                 subthem.update({'risks': risks})
                 for risk in risks:
                     genes = database.get_genes_for_risk(risk['id'])
