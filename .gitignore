@@ -1,3 +1,11 @@
 /venv/
 /.idea/
 /*.log
+/tex/*.log
+/tex/*.dvi
+/tex/*.pdf
+/tex/*.gz
+/tex/*.aux
+/tex/*.png
+/tex/*.ps
+/tex/report01.tex
