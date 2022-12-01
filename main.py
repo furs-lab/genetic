@@ -20,12 +20,12 @@ if __name__ == '__main__':
     import calculations
 
     res = database.get_risks(8)
-    print(res)
+    #print(res)
     res1 = calculations.calc_risk(res, analysis)
     print(res1)
-    # res2 = calculations.modify_genes_dict(res, res1)
-    # for rr in res2:
-    #     print(rr['name'],"->" , rr['result'], '--->', rr['inter'])
+    res2 = calculations.modify_risks_dict(res, res1)
+    for rr in res2:
+        print(rr['inter'])
 
     database.stop()
     logging.info("finish main")
