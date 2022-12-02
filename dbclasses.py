@@ -42,8 +42,8 @@ class RiskSet:
     pass
 
 
-# engine = create_engine('mysql+pymysql://debian-sys-maint:UmX4EHHEbeT8Ad0F@localhost/genetic')
-engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
+engine = create_engine('mysql+pymysql://debian-sys-maint:UmX4EHHEbeT8Ad0F@localhost/genetic')
+# engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
 meta = MetaData(engine)
 
 clinics = Table('clinics', meta, autoload=True)

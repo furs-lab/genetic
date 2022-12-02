@@ -1,12 +1,12 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 
-# files = {'template_path': '/data/_Fursenko_D/python/PycharmProjects/genetic/tex/',
-#          'template_name': 'template01.tex',
-#          'output_name': 'report01.tex'}
-files = {'template_path': os.path.abspath('./tex/'),
+files = {'template_path': '/data/_Fursenko_D/python/PycharmProjects/genetic/tex/',
          'template_name': 'template01.tex',
          'output_name': 'report01.tex'}
+# files = {'template_path': os.path.abspath('./tex/'),
+#          'template_name': 'template01.tex',
+#          'output_name': 'report01.tex'}
 
 # logger config
 logging_config = {

@@ -130,22 +130,22 @@
 				\BLOCK{ for risk in subtheme['risks']: }
 					\VAR{risk["name_report"]} 
 					&  
-					\BLOCK{ if risk["risk_value"] == 'low'}
+					\BLOCK{ if risk["risk_level"] == 'low'}
 					V
 					\cellcolor{blue!20}
 					\BLOCK{ endif}    
 					&
-					\BLOCK{ if risk["risk_value"] == 'mid'}
+					\BLOCK{ if risk["risk_level"] == 'mid'}
 					V
 					\cellcolor{green!40}
 					\BLOCK{ endif} 
 					&   
-					\BLOCK{ if risk["risk_value"] == 'high'}
+					\BLOCK{ if risk["risk_level"] == 'high'}
 					V
 					\cellcolor{yellow!40}
 					\BLOCK{ endif} 
 					& 
-					\BLOCK{ if risk["risk_value"] == 'upper'}
+					\BLOCK{ if risk["risk_level"] == 'upper'}
 					V
 					\cellcolor{red!50}
 					\BLOCK{ endif}\\
@@ -173,8 +173,8 @@
 	\textit{Рекомендации:}
 		\BLOCK{ for subtheme in theme['subthemes']: }
 			\BLOCK{ for risk in subtheme['risks']: }
-				\BLOCK{ if risk["risk_value"] == 'upper' or risk["risk_value"] == 'high'}
-					\VAR{risk["short_recommendation"]}\\
+				\BLOCK{ if risk["risk_level"] == 'upper' or risk["risk_level"] == 'high'}
+					\VAR{risk["short_recommendation"]}\\ 
 				\BLOCK{ endif}
 			\BLOCK{ endfor } 
 		\BLOCK{ endfor  }
@@ -199,6 +199,29 @@
 			\VAR{risk["inter"]}\\
 			\VAR{risk["recommendation"]}\\
 			
+			\begin{center}
+				\newcolumntype{C}{>{\arraybackslash}p{3.5cm}}
+				\begin{longtable} { |c|c|c|C|C| }
+					%\caption*{\textsl{Ваш генотип}}
+					\hline
+					Ген & RS & Генотип & Функция & Интерпретация \\
+					\hline
+					
+					\BLOCK{ for gene in risk['genes']: }
+						\VAR{gene["name"]}
+						&
+						\VAR{gene["rs_position"]}
+						&
+						\VAR{gene["result"]}
+						&
+						\VAR{gene["function"]}
+						&
+						\VAR{gene["inter"]}\\
+						\hline
+					\BLOCK{ endfor }
+				\end{longtable}
+			\end{center}
+		
 			\pagebreak
 		\BLOCK{ endfor } 
 	\BLOCK{ endfor  }

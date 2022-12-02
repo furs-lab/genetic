@@ -11,7 +11,7 @@ def process_text(text):
     if text == None:
         logging.warning(f'\'None\' found when text from database processed, return \'\'')
         return ''
-    text = text.replace('\n', '').replace('%', '\%')
+    text = text.replace('\n', '').replace('%', '\%').replace('_', '\_')
     return text
 
 
@@ -77,6 +77,8 @@ def modify_genes_dict(genes_list, genotypes_list):
             logging.warning(f'genotype for gene \'{gene["name"]}\', {gene["rs_position"]} did not defined, return '
                             f'empty interpretation')
 
+        gene['name'] = process_text(gene['name'])
+        gene['rs_position'] = process_text(gene['rs_position'])
         gene.update({'genotype': genotype})
         for gt in genotype_names:
             del gene['inter_' + gt]
@@ -136,8 +138,9 @@ def create_jinja2_dict(analysis):
                     risk.update({'genes': genes})
 
     temp_vars.update({'panels': panels})
-    for theme in panels[0]['themes']:
-        print(theme['name'])
+
+    # for theme in panels[0]['themes']:
+    #     print(theme['name'])
     # for panel in panels:
     #     print(panel['name'])
     #     for theme in themes:
@@ -147,7 +150,7 @@ def create_jinja2_dict(analysis):
     #             for risk in subtheme['risks']:
     #                 print('\t\t\t', risk['id'])
     #                 for gene in risk['genes']:
-    #                     print('\t\t\t\t', gene['id'])
+    #                     print('\t\t\t\t', gene['name'])
 
     logging.info(f'dict created')
     return temp_vars
