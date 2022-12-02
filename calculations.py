@@ -1,7 +1,9 @@
 import logging
 from random import uniform
 
+import config
 import database
+import plotrisk
 
 genotype_names = ['genotype1', 'genotype2', 'genotype3']
 risk_levels_names = ['low', 'mid', 'high', 'upper']
@@ -99,7 +101,7 @@ def modify_risks_dict(risks_list, risk_values):
                     'short_recommendation': process_text(risk[risk_level + '_short_recommendation'])})
         logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
 
-        risk.update({'risk_value': risk_value, 'risk_level': risk_level})
+        risk.update({'value': risk_value, 'level': risk_level})
         for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
@@ -118,7 +120,7 @@ def create_jinja2_dict(analysis):
     logging.info(f'start creating dict for report for {analysis.patient_name}, analysis no. {analysis.number}')
 
     # !!!FOR TEST PURPOSES ONLY
-    analysis.panels = ['Вит. Нов']  # !!!FOR TEST PURPOSES ONLY
+    analysis.panels = ['НГ14-16'] #['Вит. Нов']  # !!!FOR TEST PURPOSES ONLY
     # !!!FOR TEST PURPOSES ONLY
 
     panels = []
@@ -136,8 +138,12 @@ def create_jinja2_dict(analysis):
                     genes = database.get_genes_for_risk(risk['id'])
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
+                    risk.update({'fig_name': config.files['template_path'] + 'risk_' + str(risk['id']) + '.png'})
+                    plotrisk.plot_risk(float(risk['low_level']), float(risk['high_level']),
+                                       float(risk['value']), risk['fig_name'])
 
     temp_vars.update({'panels': panels})
+
 
     # for theme in panels[0]['themes']:
     #     print(theme['name'])

@@ -130,22 +130,22 @@
 				\BLOCK{ for risk in subtheme['risks']: }
 					\VAR{risk["name_report"]} 
 					&  
-					\BLOCK{ if risk["risk_level"] == 'low'}
+					\BLOCK{ if risk["level"] == 'low'}
 					V
 					\cellcolor{blue!20}
 					\BLOCK{ endif}    
 					&
-					\BLOCK{ if risk["risk_level"] == 'mid'}
+					\BLOCK{ if risk["level"] == 'mid'}
 					V
 					\cellcolor{green!40}
 					\BLOCK{ endif} 
 					&   
-					\BLOCK{ if risk["risk_level"] == 'high'}
+					\BLOCK{ if risk["level"] == 'high'}
 					V
 					\cellcolor{yellow!40}
 					\BLOCK{ endif} 
 					& 
-					\BLOCK{ if risk["risk_level"] == 'upper'}
+					\BLOCK{ if risk["level"] == 'upper'}
 					V
 					\cellcolor{red!50}
 					\BLOCK{ endif}\\
@@ -173,7 +173,7 @@
 	\textit{Рекомендации:}
 		\BLOCK{ for subtheme in theme['subthemes']: }
 			\BLOCK{ for risk in subtheme['risks']: }
-				\BLOCK{ if risk["risk_level"] == 'upper' or risk["risk_level"] == 'high'}
+				\BLOCK{ if risk["level"] == 'upper' or risk["level"] == 'high'}
 					\VAR{risk["short_recommendation"]}\\ 
 				\BLOCK{ endif}
 			\BLOCK{ endfor } 
@@ -198,6 +198,12 @@
 			\textbf{Заключение:}\\
 			\VAR{risk["inter"]}\\
 			\VAR{risk["recommendation"]}\\
+			
+			\begin{figure}[bh]
+				\noindent\centering{
+					\includegraphics[width=120mm]{\VAR{risk['fig_name']}}
+				}
+			\end{figure}
 			
 			\begin{center}
 				\newcolumntype{C}{>{\arraybackslash}p{3.5cm}}
