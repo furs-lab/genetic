@@ -32,7 +32,6 @@ def calc_genotype(genes_list, analysis):
                 genotypes_list.append(genotype)
                 logging.info(f'gene \'{gene["name"]}\', {gene["rs_position"]}, genotype = \'{genotype}\'')
                 break
-
     return genotypes_list
 
 
@@ -42,7 +41,6 @@ def calc_risk_values(risks_list, analysis):
         # do some calculations or call some function for these calculations
         risk_values.append(uniform(0, 1.5 * float(risk['high_level'])))
         logging.info(f'calculate risk value \'{risk_values[-1]:.2f}\' for risk id: {risk["id"]}')
-
     return risk_values
 
 
@@ -84,7 +82,6 @@ def modify_genes_dict(genes_list, genotypes_list):
         gene.update({'genotype': genotype})
         for gt in genotype_names:
             del gene['inter_' + gt]
-
     return genes_list
 
 
@@ -105,7 +102,6 @@ def modify_risks_dict(risks_list, risk_values):
         for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
-
     return risks_list
 
 
@@ -143,7 +139,6 @@ def create_jinja2_dict(analysis):
                                        float(risk['value']), risk['fig_name'])
 
     temp_vars.update({'panels': panels})
-
 
     # for theme in panels[0]['themes']:
     #     print(theme['name'])

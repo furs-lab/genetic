@@ -27,6 +27,7 @@ if __name__ == '__main__':
 
     with open(files['template_path'] + files['output_name'], 'w') as f:
         f.write(res)
+        logging.info(f'write template file {files["template_path"] + files["output_name"]}')
     f.close()
 
     database.stop()
