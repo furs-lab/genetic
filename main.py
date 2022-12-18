@@ -3,10 +3,12 @@ from logging.config import dictConfig
 import jinja2
 
 import calculations
+import config
 import plotrisk
 from analysis import Analysis
 from config import logging_config, files, latex_jinja_env
 import os
+from pathlib import Path
 
 if __name__ == '__main__':
     dictConfig(logging_config)
@@ -25,9 +27,10 @@ if __name__ == '__main__':
 
     res = template.render(temp_vars)
 
-    with open(files['template_path'] + files['output_name'], 'w') as f:
+    fname = Path(config.files['template_path'], config.files['output_name'])
+    with open(fname, 'w') as f:
         f.write(res)
-        logging.info(f'write template file {files["template_path"] + files["output_name"]}')
+        logging.info(f'write template file {fname}')
     f.close()
 
     database.stop()

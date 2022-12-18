@@ -134,7 +134,7 @@ def create_jinja2_dict(analysis):
                     genes = database.get_genes_for_risk(risk['id'])
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
-                    risk.update({'fig_name': config.files['template_path'] + 'risk_' + str(risk['id']) + '.png'})
+                    risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png')})
                     plotrisk.plot_risk(float(risk['low_level']), float(risk['high_level']),
                                        float(risk['value']), risk['fig_name'])
 
