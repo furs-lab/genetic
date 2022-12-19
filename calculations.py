@@ -35,26 +35,36 @@ def calc_genotype(genes_list, analysis):
     return genotypes_list
 
 
-def calc_risk_values(risks_list, analysis):
-    risk_values = []
-    for risk in risks_list:
-        # do some calculations or call some function for these calculations
-        risk_values.append(uniform(0, 1.5 * float(risk['high_level'])))
-        logging.info(f'calculate risk value \'{risk_values[-1]:.2f}\' for risk id: {risk["id"]}')
-    return risk_values
+def calc_risk_values(risk, analysis):
+    val, val_max, val_min = 1, 1, 1
+    genes_n = 0
+    for gene in risk['genes']:
+        if gene['genotype'] != '':
+            val *= gene['deposit' + gene['genotype'].replace('genotype', '')]
+            val_max *= max([gene['deposit' + str(i)] for i in range(1, 4)])
+            val_min *= min([gene['deposit' + str(i)] for i in range(1, 4)])
+            genes_n += 1
+
+    if genes_n == 0:
+        val, val_max, val_min = 0, 0, 0
+        logging.warning(f'no genes to calculate risk {risk["id"]}, return zeros, {val=}, {val_max=}, {val_min=}')
+    else:
+        logging.info(f'risk for risk_id {risk["id"]} is calculated {val=}, {val_max=}, {val_min=}')
+
+    risk = {'value': val,
+            'value_max': val_max,
+            'value_min': val_min}
+    return risk
 
 
-def calc_risk_levels(risks_list, risk_values):
+def calc_risk_levels(risks_list):
     risk_levels = []
-    if len(risks_list) != len(risk_values):
-        logging.warning(f'different lengths of risks_list and risk_values, return []')
-        return []
-    for risk, risk_value in zip(risks_list, risk_values):
-        if risk_value <= float(risk['low_level']):
+    for risk in risks_list:
+        if risk['value'] <= float(risk['low_level']):
             risk_levels.append('low')
-        elif float(risk['low_level']) < risk_value <= float(risk['mid_level']):
+        elif float(risk['low_level']) < risk['value'] <= float(risk['mid_level']):
             risk_levels.append('mid')
-        elif float(risk['mid_level']) < risk_value <= float(risk['high_level']):
+        elif float(risk['mid_level']) < risk['value'] <= float(risk['high_level']):
             risk_levels.append('high')
         else:
             risk_levels.append('upper')
@@ -79,26 +89,24 @@ def modify_genes_dict(genes_list, genotypes_list):
 
         gene['name'] = process_text(gene['name'])
         gene['rs_position'] = process_text(gene['rs_position'])
+        for i in range(1, 4):
+            gene['deposit' + str(i)] = float(gene['deposit' + str(i)])
         gene.update({'genotype': genotype})
         for gt in genotype_names:
             del gene['inter_' + gt]
     return genes_list
 
 
-def modify_risks_dict(risks_list, risk_values):
-    risk_levels = calc_risk_levels(risks_list, risk_values)
-    if len(risks_list) != len(risk_values):
-        logging.warning(f'different lengths of risks_list and risk_values, modifications did not perform')
-        return risks_list
-
-    for risk, risk_value, risk_level in zip(risks_list, risk_values, risk_levels):
+def modify_risks_dict(risks_list):
+    risk_levels = calc_risk_levels(risks_list)
+    for risk, risk_level in zip(risks_list, risk_levels):
         risk.update({'inter': process_text(risk[risk_level + '_inter']),
                     'briefly': process_text(risk[risk_level + '_briefly']),
                     'recommendation': process_text(risk[risk_level + '_recommendation']),
                     'short_recommendation': process_text(risk[risk_level + '_short_recommendation'])})
         logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
 
-        risk.update({'value': risk_value, 'level': risk_level})
+        risk.update({'level': risk_level})
         for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
@@ -128,15 +136,16 @@ def create_jinja2_dict(analysis):
             theme.update({'subthemes': subthemes})
             for subthem in subthemes:
                 risks = database.get_risks(subthem['id'])
-                risks = modify_risks_dict(risks, calc_risk_values(risks, analysis))
-                subthem.update({'risks': risks})
                 for risk in risks:
                     genes = database.get_genes_for_risk(risk['id'])
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
+                    risk.update(calc_risk_values(risk, analysis))
                     risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png')})
                     plotrisk.plot_risk(float(risk['low_level']), float(risk['high_level']),
                                        float(risk['value']), risk['fig_name'])
+                risks = modify_risks_dict(risks)
+                subthem.update({'risks': risks})
 
     temp_vars.update({'panels': panels})
 
