@@ -91,9 +91,11 @@ def modify_genes_dict(genes_list, genotypes_list):
         gene['rs_position'] = process_text(gene['rs_position'])
         for i in range(1, 4):
             gene['deposit' + str(i)] = float(gene['deposit' + str(i)])
+            gene['freq' + str(i)] = float(gene['freq' + str(i)])
         gene.update({'genotype': genotype})
         for gt in genotype_names:
             del gene['inter_' + gt]
+        del gene['_sa_instance_state']
     return genes_list
 
 
@@ -110,10 +112,11 @@ def modify_risks_dict(risks_list):
         for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
+        del risk['_sa_instance_state']
     return risks_list
 
 
-def create_jinja2_dict(analysis):
+def create_tag_dict(analysis):
     temp_vars = {'name': analysis.patient_name,
                  'birthday': analysis.patient_birthday,
                  'sex': analysis.patient_sex,
@@ -135,13 +138,14 @@ def create_jinja2_dict(analysis):
             subthemes = database.get_subthemes(theme['id'])
             theme.update({'subthemes': subthemes})
             for subthem in subthemes:
+                del subthem['_sa_instance_state']
                 risks = database.get_risks(subthem['id'])
                 for risk in risks:
                     genes = database.get_genes_for_risk(risk['id'])
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
                     risk.update(calc_risk_values(risk, analysis))
-                    risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png')})
+                    risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png').as_posix()})
                     plotrisk.plot_risk(float(risk['low_level']), float(risk['high_level']),
                                        float(risk['value']), risk['fig_name'])
                 risks = modify_risks_dict(risks)

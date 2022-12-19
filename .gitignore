@@ -8,4 +8,5 @@
 /tex/*.aux
 /tex/*.png
 /tex/*.ps
+/tex/*.json
 /tex/report01.tex
