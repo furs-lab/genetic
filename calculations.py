@@ -146,8 +146,7 @@ def create_tag_dict(analysis):
                     risk.update({'genes': genes})
                     risk.update(calc_risk_values(risk, analysis))
                     risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png').as_posix()})
-                    plotrisk.plot_risk(float(risk['low_level']), float(risk['high_level']),
-                                       float(risk['value']), risk['fig_name'])
+                    plotrisk.plot_risk(risk['value_min'], risk['value_max'], risk['value'], risk['fig_name'])
                 risks = modify_risks_dict(risks)
                 subthem.update({'risks': risks})
 
