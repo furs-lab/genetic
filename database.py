@@ -55,7 +55,9 @@ def get_themes(panel_name):
     for row in qr.all():
         themes_list.append({'id': row.PanelSet.id_theme,
                             'name': session.get(Themes, row.PanelSet.id_theme).name,
-                            'name_report': session.get(Themes, row.PanelSet.id_theme).name_report})
+                            'name_report': session.get(Themes, row.PanelSet.id_theme).name_report,
+                            'order': row.PanelSet.order_theme,
+                            'visible': row.PanelSet.visible_theme})
     if len(themes_list) == 0:
         logging.warning(f'no themes in this panel: \'{panel_name}\', empty themes list is returned')
     logging.info(f'get themes list {[itm["id"] for itm in themes_list]} for panel \'{panel_name}\'')
@@ -75,7 +77,10 @@ def get_themes(panel_id):
 def get_subthemes(theme_id):
     qr = session.query(ThemeSet, SubThemes).filter(SubThemes.id == ThemeSet.id_subtheme).filter(
         ThemeSet.id_theme == theme_id)
-    subthemes_list = [row.SubThemes.__dict__ for row in qr.all()]
+    subthemes_list = []
+    for row in qr.all():
+        subthemes_list.append(row.SubThemes.__dict__)
+        subthemes_list[-1].update({'order': row.ThemeSet.order_subtheme})
     if len(subthemes_list) == 0:
         logging.warning(f'there is no subthemes for theme with id: {theme_id}, empty themes list is returned')
     logging.info(f'get subthemes list {[itm["id"] for itm in subthemes_list]} for theme with id: {theme_id}')
@@ -85,7 +90,10 @@ def get_subthemes(theme_id):
 def get_risks(subtheme_id):
     qr = session.query(SubThemeSet, Risks).filter(Risks.id == SubThemeSet.id_risk).filter(
         SubThemeSet.id_subtheme == subtheme_id)
-    risks_list = [row.Risks.__dict__ for row in qr.all()]
+    risks_list = []
+    for row in qr.all():
+        risks_list.append(row.Risks.__dict__)
+        risks_list[-1].update({'order': row.SubThemeSet.order_risk})
     if len(risks_list) == 0:
         logging.warning(f'there is no risks for subtheme with id: {subtheme_id}, empty risks list is returned')
     logging.info(f'get risks list (ids:  {[itm["id"] for itm in risks_list]}) for subtheme with id: {subtheme_id}')
