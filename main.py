@@ -36,9 +36,14 @@ def analysis_from_json(json_str):
     return Analysis(read_json(json_str))
 
 
-def create_json_test():
-    dic = {'name': 'aaaaa', 'result': 5}
+def create_json_test(analysis_data_json):
+    # dic = create_json(analysis_from_excel("tst_analysis.xlsx"))  # {'name': 'aaaaa', 'result': 5}
+    print(analysis_data_json)
+    dic = analysis_data_json
+    dic.update({'result': 'qqq'})
     return dic
+
+
 def create_json(analysis):
     logging.info("start create_json")
     panels = analysis.get_panels()
@@ -56,6 +61,7 @@ def create_json(analysis):
     f.close()
     logging.info("finish create_json")
     database.stop()
+    return tag_dict
 
 
 def create_tex(analysis):
