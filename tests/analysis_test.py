@@ -1,10 +1,11 @@
 import pytest
+from pandas import read_excel
 from analysis import Analysis
 
 
 @pytest.fixture
 def test_filename():
-    return "tst_analysis.xlsx"
+    return read_excel("tst_analysis.xlsx").dropna()
 
 
 def test_analysis_read(test_filename):
@@ -16,12 +17,6 @@ def test_analysis_read(test_filename):
                                  "Иванов Иван Иванович",
                                  "22/11/1999",
                                  "AB-0123"]
-
-
-def test_analysis_read_nofile(test_filename):
-    with pytest.raises(Exception) as error:
-        Analysis.read(Analysis, "test_filename[1:]")
-    assert 'Error: can not read excel file' == error.value.args[0]
 
 
 def test_analysis_constructor(test_filename):

@@ -3,6 +3,7 @@ from logging.config import dictConfig
 import jinja2
 import json
 from pathlib import Path
+from pandas import read_excel
 
 import calculations
 import config
@@ -11,9 +12,17 @@ from analysis import Analysis
 from config import logging_config, files, latex_jinja_env
 
 
-def create_json(analysis_fname):
+def analysis_from_excel(fname):
+    try:
+        analysis_data = read_excel(fname).dropna()
+    except Exception:
+        logging.exception('Error: can not read excel file')
+        raise Exception('Error: can not read excel file')
+    logging.info(f'read excel file \'{fname}\'')
+    return Analysis(analysis_data)
+
+def create_json(analysis):
     logging.info("start create_json")
-    analysis = Analysis(analysis_fname)
     panels = analysis.get_panels()
     analysis.sort_by_gens()
 
@@ -31,9 +40,8 @@ def create_json(analysis_fname):
     database.stop()
 
 
-def create_tex(analysis_fname):
+def create_tex(analysis):
     logging.info("start create_tex")
-    analysis = Analysis(analysis_fname)
     panels = analysis.get_panels()
     analysis.sort_by_gens()
 
@@ -59,7 +67,9 @@ if __name__ == '__main__':
 
     logging.info("start main")
 
-    create_json("tst_analysis.xlsx")
+    analysis = analysis_from_excel("tst_analysis.xlsx")
+
+    create_json(analysis)
 
     # analysis = Analysis("tst_analysis.xlsx")
     # panels = analysis.get_panels()
