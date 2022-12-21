@@ -38,10 +38,9 @@ def analysis_from_json(json_str):
 
 def create_json_test(analysis_data_json):
     # dic = create_json(analysis_from_excel("tst_analysis.xlsx"))  # {'name': 'aaaaa', 'result': 5}
-    print(analysis_data_json)
-    dic = analysis_data_json
-    dic.update({'result': 'qqq'})
-    return dic
+    analysis = analysis_from_json(analysis_data_json)
+    tag_dic = create_json(analysis)
+    return tag_dic
 
 
 def create_json(analysis):

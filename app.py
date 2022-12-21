@@ -16,7 +16,7 @@ def get_tasks():
     if not request.json:
         abort(400)
     dic = main.create_json_test(request.json)
-    return jsonify(request.json)
+    return jsonify(dic)
 
 
 if __name__ == '__main__':
