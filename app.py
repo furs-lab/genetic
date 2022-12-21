@@ -10,12 +10,12 @@ previous_time = datetime.now()
 app = Flask(__name__)
 
 
-def can_responce():
+def can_response():
     global requests_number, previous_time
     requests_number += 1
     if (datetime.now() - previous_time).seconds > 60:
         previous_time = datetime.now()
-        requests_number = 0
+        requests_number = 1
     return requests_number <= REQUESTS_PER_MINUTE
 
 
@@ -28,7 +28,7 @@ def index():
 def get_tasks():
     if not request.json:
         abort(400)
-    if not can_responce():
+    if not can_response():
         return jsonify({'error': f'limit {REQUESTS_PER_MINUTE} requests per minute'})
     dic = main.create_json_test(request.json)
     dic = request.json
