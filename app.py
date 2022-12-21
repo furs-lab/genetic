@@ -31,7 +31,6 @@ def get_tasks():
     if not can_response():
         return jsonify({'error': f'limit {REQUESTS_PER_MINUTE} requests per minute'})
     dic = main.create_json_test(request.json)
-    dic = request.json
     return jsonify(dic)
 
 
