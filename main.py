@@ -35,6 +35,10 @@ def json_from_excel(fname):
 def analysis_from_json(json_str):
     return Analysis(read_json(json_str))
 
+
+def create_json_test():
+    dic = {'name': 'aaaaa', 'result': 5}
+    return dic
 def create_json(analysis):
     logging.info("start create_json")
     panels = analysis.get_panels()
