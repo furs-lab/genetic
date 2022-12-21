@@ -17,4 +17,5 @@ def plot_risk(minr, maxr, cur, fname):
     plt.text(cur, 0.0085, "{:.2f}".format(cur), fontsize=18)
     plt.axis('off')
     plt.savefig(fname, bbox_inches='tight')
+    plt.close()
     logging.info(f'plot and save riscmeter figure {fname}')

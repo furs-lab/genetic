@@ -17,6 +17,19 @@ def process_text(text):
     return text
 
 
+def process_all_text_in_dict(tag_dic, process_text=process_text):
+    for panel in tag_dic['panels']:
+        for i, theme in enumerate(panel['themes']):
+            theme = {k: process_text(v) if isinstance(v, str) else v for k, v in theme.items()}
+            for i, subtheme in enumerate(theme['subthemes']):
+                theme['subthemes'][i] = {k: process_text(v) if isinstance(v, str) else v for k, v in subtheme.items()}
+                for i, risk in enumerate(subtheme['risks']):
+                    subtheme['risks'][i] = {k: process_text(v) if isinstance(v, str) else v for k, v in risk.items()}
+                    for i, gene in enumerate(risk['genes']):
+                        risk['genes'][i] = {k: process_text(v) if isinstance(v, str) else v for k, v in gene.items()}
+    return tag_dic
+
+
 def calc_genotype(genes_list, analysis):
     genotypes_list = []
     for gene in genes_list:
@@ -79,41 +92,44 @@ def modify_genes_dict(genes_list, genotypes_list):
 
     for gene, genotype in zip(genes_list, genotypes_list):
         if genotype in genotype_names:
-            gene.update({'inter': process_text(gene['inter_' + genotype]),
-                         'result': process_text(gene[genotype])})
+            gene.update({'inter': gene['inter_' + genotype],
+                         'result': gene[genotype]})
             logging.info(f'interpretation for gene \'{gene["name"]}\', {gene["rs_position"]} is selected')
         else:
             gene.update({'inter': '', 'result': ''})
             logging.warning(f'genotype for gene \'{gene["name"]}\', {gene["rs_position"]} did not defined, return '
                             f'empty interpretation')
 
-        gene['name'] = process_text(gene['name'])
-        gene['rs_position'] = process_text(gene['rs_position'])
-        for i in range(1, 4):
-            gene['deposit' + str(i)] = float(gene['deposit' + str(i)])
-            gene['freq' + str(i)] = float(gene['freq' + str(i)])
         gene.update({'genotype': genotype})
         for gt in genotype_names:
             del gene['inter_' + gt]
-        del gene['_sa_instance_state']
     return genes_list
 
 
 def modify_risks_dict(risks_list):
     risk_levels = calc_risk_levels(risks_list)
     for risk, risk_level in zip(risks_list, risk_levels):
-        risk.update({'inter': process_text(risk[risk_level + '_inter']),
-                    'briefly': process_text(risk[risk_level + '_briefly']),
-                    'recommendation': process_text(risk[risk_level + '_recommendation']),
-                    'short_recommendation': process_text(risk[risk_level + '_short_recommendation'])})
+        risk.update({'inter': risk[risk_level + '_inter'],
+                     'briefly': risk[risk_level + '_briefly'],
+                     'recommendation': risk[risk_level + '_recommendation'],
+                     'short_recommendation': risk[risk_level + '_short_recommendation']})
         logging.info(f'interpretations and recommendations for risk id: {risk["id"]} are selected')
 
         risk.update({'level': risk_level})
         for rn in risk_levels_names:
             del risk[rn + '_inter'], risk[rn + '_briefly'], risk[rn + '_recommendation'], \
                 risk[rn + '_short_recommendation']
-        del risk['_sa_instance_state']
     return risks_list
+
+
+def create_risk_figures(tag_dic):
+    for panel in tag_dic['panels']:
+        for theme in panel['themes']:
+            for subtheme in theme['subthemes']:
+                for risk in subtheme['risks']:
+                    risk.update({'fig_name': config.Path(config.files['template_path'],
+                                                         'risk_' + str(risk['id']) + '.png').as_posix()})
+                    plotrisk.plot_risk(risk['value_min'], risk['value_max'], risk['value'], risk['fig_name'])
 
 
 def create_tag_dict(analysis):
@@ -127,7 +143,7 @@ def create_tag_dict(analysis):
     logging.info(f'start creating dict for report for {analysis.patient_name}, analysis no. {analysis.number}')
 
     # !!!FOR TEST PURPOSES ONLY
-    analysis.panels = ['НГ14-16'] #['Вит. Нов']  # !!!FOR TEST PURPOSES ONLY
+    analysis.panels = ['НГ14-16']  # ['Вит. Нов']  # !!!FOR TEST PURPOSES ONLY
     # !!!FOR TEST PURPOSES ONLY
 
     panels = []
@@ -138,15 +154,12 @@ def create_tag_dict(analysis):
             subthemes = database.get_subthemes(theme['id'])
             theme.update({'subthemes': subthemes})
             for subthem in subthemes:
-                del subthem['_sa_instance_state']
                 risks = database.get_risks(subthem['id'])
                 for risk in risks:
                     genes = database.get_genes_for_risk(risk['id'])
                     genes = modify_genes_dict(genes, calc_genotype(genes, analysis))
                     risk.update({'genes': genes})
                     risk.update(calc_risk_values(risk, analysis))
-                    risk.update({'fig_name': config.Path(config.files['template_path'], 'risk_' + str(risk['id']) + '.png').as_posix()})
-                    plotrisk.plot_risk(risk['value_min'], risk['value_max'], risk['value'], risk['fig_name'])
                 risks = modify_risks_dict(risks)
                 subthem.update({'risks': risks})
 
