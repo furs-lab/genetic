@@ -3,7 +3,7 @@ from logging.config import dictConfig
 import jinja2
 import json
 from pathlib import Path
-from pandas import read_excel
+from pandas import read_excel, read_json
 
 import calculations
 import config
@@ -20,6 +20,20 @@ def analysis_from_excel(fname):
         raise Exception('Error: can not read excel file')
     logging.info(f'read excel file \'{fname}\'')
     return Analysis(analysis_data)
+
+
+def json_from_excel(fname):
+    try:
+        analysis_data = read_excel(fname).dropna()
+    except Exception:
+        logging.exception('Error: can not read excel file')
+        raise Exception('Error: can not read excel file')
+    logging.info(f'read excel file \'{fname}\'')
+    return analysis_data.to_json()
+
+
+def analysis_from_json(json_str):
+    return Analysis(read_json(json_str))
 
 def create_json(analysis):
     logging.info("start create_json")
@@ -71,32 +85,4 @@ if __name__ == '__main__':
 
     create_json(analysis)
 
-    # analysis = Analysis("tst_analysis.xlsx")
-    # panels = analysis.get_panels()
-    # # analysis.get_panel_data('fat')
-    # analysis.sort_by_gens()
-    #
-    # import database
-    #
-    # template = latex_jinja_env.get_template(files['template_name'])
-    #
-    # tag_dict = calculations.create_tag_dict(analysis)
-    #
-    # # Output to TEX
-    # res = template.render(tag_dict)
-    # fname = Path(config.files['template_path'], config.files['output_tex_name'])
-    # with open(fname, 'w') as f:
-    #     f.write(res)
-    #     logging.info(f'write template file {fname}')
-    # f.close()
-    #
-    # # Output to JSON
-    # fname = Path(config.files['template_path'], config.files['output_json_name'])
-    # with open(fname, 'w') as f:
-    #     del tag_dict['scandat']
-    #     json.dump(tag_dict, f)
-    #     logging.info(f'write JSON file {fname}')
-    # f.close()
-    #
-    # database.stop()
     logging.info("finish main")
