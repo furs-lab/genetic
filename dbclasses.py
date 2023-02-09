@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper
 from config import files
+from urllib.parse import quote_plus
 
 
 class Clinics:
@@ -46,6 +47,7 @@ class RiskSet:
 with open(files['login_name'], 'r') as f:
     login_str = f.readline()
 engine = create_engine(login_str)
+# engine = create_engine("mysql+pymysql://mgusta91_toolgen:%s@31.31.198.186:3306/genetic" % quote_plus("T[^[asev}r@L"))
 # engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
 meta = MetaData(engine)
 
