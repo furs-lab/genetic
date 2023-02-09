@@ -4,7 +4,8 @@ from pathlib import Path
 files = {'template_path': Path(Path().absolute(), 'tex'),
          'template_name': 'template01.tex',
          'output_tex_name': 'report01.tex',
-         'output_json_name': 'report01.json'}
+         'output_json_name': 'report01.json',
+         'login_name': 'login_loc.txt'}
 # files = {'template_path': Path(Path().absolute(), 'tex'),
 #          'template_name': 'template01.tex',
 #          'output_tex_name': 'report01.tex',

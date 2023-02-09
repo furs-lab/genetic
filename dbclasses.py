@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper
+from config import files
 
 
 class Clinics:
@@ -42,7 +43,9 @@ class RiskSet:
     pass
 
 
-engine = create_engine('mysql+pymysql://debian-sys-maint:UmX4EHHEbeT8Ad0F@localhost/genetic')
+with open(files['login_name'], 'r') as f:
+    login_str = f.readline()
+engine = create_engine(login_str)
 # engine = create_engine('mysql+pymysql://root:feromon@localhost/genetic')
 meta = MetaData(engine)
 
