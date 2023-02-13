@@ -94,4 +94,6 @@ if __name__ == '__main__':
 
     create_json(analysis)
 
+    # create_tex(analysis)
+
     logging.info("finish main")
